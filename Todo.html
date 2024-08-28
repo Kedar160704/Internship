@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO</title>
+</head>
+<body>
+   <h1>My TODO list</h1> 
+   <div id="form">
+        <form>
+            <input type="text" placeholder="Type TODO here">
+            <input type="submit" value="Create TODO">
+        </form>
+   </div>
+    <div id="todos"></div>
+   
+    <style>
+        h1{
+            text-align: center;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            text-decoration: 2px green underline;
+        }
+
+        input{
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgb(207, 207, 233); 
+        }
+        div#form{
+            text-align: center;
+        }
+        .todo{
+            text-align: center;
+            margin: 10px auto;
+            width: 50%;
+            background-color: crimson;
+            padding: 8px;
+        }
+
+
+    </style>
+    <script>
+        const input = document.querySelector("input[type='text']")
+        const form = document.querySelector("form")
+        const TODODiv = document.querySelector("#todos")
+        
+        function loadtodos(){
+            const todoJSON = localStorage.getItem("todos")
+
+            if(todoJSON){
+                return JSON.parse(todoJSON)
+            }
+
+            return[]
+        }
+
+        const todos = loadtodos()
+
+        function savetodos(){
+            const todoJSON = JSON.stringify(todos);
+            localStorage.setItem("todos",todoJSON)
+        }
+
+        function populatetodos(){
+            //clear todo
+            TODODiv.innerHTML = ""
+
+            for (const TODO of todos){
+                const p = document.createElement("p")
+                p.classList.add("todo")
+                p.innerText = TODO
+                TODODiv.append(p)
+
+                const index = todos.indexOf(TODO)
+                p.addEventListener("click",(event)=>{
+                    todos.splice(index, 1)
+                    populatetodos() 
+                })
+
+            }
+
+            savetodos()
+        }
+
+        function addtodos(newTodo){
+            todos.push(newTodo)
+            populatetodos()
+        }
+
+        function handleSubmit(event){
+            event.preventDefault()
+            const text = input.value
+            addtodos(text)
+        }
+
+        form.addEventListener("submit",handleSubmit)
+
+
+        populatetodos()
+
+    </script>
+
+</body>
+</html>
